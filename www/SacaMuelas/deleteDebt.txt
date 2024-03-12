@@ -1,0 +1,12 @@
+<?php
+require_once "autoloader.php";
+
+$paci = new clinic('data.csv');
+
+if (isset($_GET['debt'])) {
+    $paci->paidVisitsClients($_GET['debt']);
+} else {
+    $paci->paidVisitsClients(null);
+}
+
+header("location: index.php");
