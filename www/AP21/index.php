@@ -28,7 +28,13 @@ $conn = $connection->getConn();
         </thead>
         <tbody>
             <?php
-                $dibujar = 'SELECT * From investment';
+            
+                $resultados_por_pagina = 5;
+
+                $pagina_actual = (isset($_GET['page']) && is_numeric($_GET['page'])) ? $_GET['page'] : 1;
+                $inicio = ($pagina_actual - 1) * $resultados_por_pagina;
+
+                $dibujar = "SELECT * FROM investment LIMIT $inicio, $resultados_por_pagina";
                 $result = mysqli_query($conn, $dibujar);
 
                 echo '<table class="table table-striped">';
@@ -39,24 +45,31 @@ $conn = $connection->getConn();
                         <th>Date</th>
                         <th>Active</th>
                         <th colspan="2">Actions</th>
-                    </tr>';     
-                
-                    $pagAct = (isset($_GET["page"])) ? $_GET["page"]: 1;
-                    
-                    for($i=0;$i<6;$i++){
-                        $result->data_seek($i);
-                        $value=$result->fetch_array(MYSQLI_ASSOC);
-                    
-                        echo '<tr>';
-                        foreach($value as $element){
-                            echo '<td>' . $element . '</td>';
-                        }
-                        echo '<td><a href="delete.php?id=' . $value['id'] . '"><img src="img/del_icon.png" width="25"></td>';
-                        echo '<td><a href="edit.php?"><img src="img/edit_icon.png" width="25"></td>';
-        
-                        echo '</tr>';
-                    }
+                    </tr>';
 
+                while ($value = mysqli_fetch_assoc($result)) {
+                    echo '<tr>';
+                    foreach($value as $element) {
+                        echo '<td>' . $element . '</td>';
+                    }
+                    echo '<td><a href="delete.php?id=' . $value['id'] . '"><img src="img/del_icon.png" width="25"></td>';
+                    echo '<td><a href="edit.php?id=' . $value['id'] . '"><img src="img/edit_icon.png" width="25"></td>';
+                    echo '</tr>';
+                }
+
+                echo '</table>';
+
+                $total_registros_query = "SELECT COUNT(*) AS total FROM investment";
+                $total_registros_resultado = mysqli_query($conn, $total_registros_query);
+                $total_registros_fila = mysqli_fetch_assoc($total_registros_resultado);
+                $total_registros = $total_registros_fila['total'];
+                $total_paginas = ceil($total_registros / $resultados_por_pagina);
+
+                echo '<div class="pagination">';
+                for ($pagina = 1; $pagina <= $total_paginas; $pagina++) {
+                    echo '<a href="?page=' . $pagina . '">' . $pagina . '</a> ';
+                }
+                echo '</div>';
             ?>
         </tbody>
     </table>
