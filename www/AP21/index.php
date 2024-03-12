@@ -41,11 +41,7 @@ $conn = $connection->getConn();
                         <th colspan="2">Actions</th>
                     </tr>';     
                 
-                    if (isset($_GET["page"])) {
-                        $pagAct = $_GET["page"];
-                    } else {
-                        $pagAct = 1;
-                    }
+                    $pagAct = (isset($_GET["page"])) ? $_GET["page"]: 1;
                     
                     for($i=0;$i<6;$i++){
                         $result->data_seek($i);
