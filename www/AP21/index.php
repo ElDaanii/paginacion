@@ -28,10 +28,10 @@ $conn = $connection->getConn();
         </thead>
         <tbody>
             <?php
-            
-                $resultados_por_pagina = 5;
 
-                $pagina_actual = (isset($_GET['page']) && is_numeric($_GET['page'])) ? $_GET['page'] : 1;
+                $resultados_por_pagina = 15;
+
+                $pagina_actual = (isset($_GET['page']) && ($_GET['page'])) ? $_GET['page'] : 1;
                 $inicio = ($pagina_actual - 1) * $resultados_por_pagina;
 
                 $dibujar = "SELECT * FROM investment LIMIT $inicio, $resultados_por_pagina";
@@ -47,7 +47,10 @@ $conn = $connection->getConn();
                         <th colspan="2">Actions</th>
                     </tr>';
 
-                while ($value = mysqli_fetch_assoc($result)) {
+                    for($i=0;$i<$resultados_por_pagina ;$i++){
+                        $result->data_seek($i);
+                        $value=$result->fetch_array(MYSQLI_ASSOC);
+                        
                     echo '<tr>';
                     foreach($value as $element) {
                         echo '<td>' . $element . '</td>';
